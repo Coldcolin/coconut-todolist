@@ -4,6 +4,7 @@ import Input from './components/input/Input'
 import TodoItems from './components/todo-items/todo-items'
 import Completed from './components/completed/completed'
 import { useState, useReducer } from 'react'
+import Colors from './components/colors/colors'
 
 const theTodos=[]
 
@@ -40,10 +41,11 @@ const reducer =(state, action)=>{
 function App() {
   const [capital, dispatch] = useReducer(reducer, theTodos);
   const [inputText, setInputText] = useState("");
+  const [colorState, setColorState] = useState("");
 
   
   const addTodos=()=>{
-    dispatch({type: "ADD_TODO", payload: {id: capital.length + 1, text: inputText, onEdit: false, completed: false}});
+    dispatch({type: "ADD_TODO", payload: {id: capital.length + 1, text: inputText, onEdit: false, completed: false, color: colorState}});
     setInputText("") 
   }
 
@@ -68,6 +70,7 @@ function App() {
   const deleteTodo=(id)=>{
     dispatch({type: "DELETE_TODO", payload: {id}})
   }
+  console.log(capital, colorState)
   return (
     <div style={{display: "flex", alignItems: "center", gap: 20, padding: 20}}>
       <div className='todo-app'>
@@ -83,6 +86,7 @@ function App() {
               cursor: "pointer"}}
                action={addTodos}>Add</Button>
         </div>
+        <Colors setColorState={setColorState}/>
         <div className='todo-list-holder'>
           {
             capital.map((e)=>(
