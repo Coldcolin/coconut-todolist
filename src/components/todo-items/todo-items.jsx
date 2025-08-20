@@ -4,7 +4,7 @@ import Button from '../button/button';
 const TodoItems = ({info, toEdit, editTodos, onSave, changeStatus, deleteTodo}) => {
   
   return (
-    <div className='todo-items'>
+    <div className='todo-items' style={{backgroundColor: `${info.color}`}}>
       <input type="checkbox" value={info.completed} className='todo-items-checkbox' onChange={()=> changeStatus(info.id)} />
       {info.onEdit? <input value={info.text} onChange={(e)=> editTodos(info.id, e.target.value) }/>:<p style={{color: "black"}}>{info.text}</p> }
         <div className="todo-items-buttons">
