@@ -2,55 +2,74 @@ import './App.css'
 import Button from './components/button/button'
 import Input from './components/input/Input'
 import TodoItems from './components/todo-items/todo-items'
-import { useState } from 'react'
+import Completed from './components/completed/completed'
+import { useState, useReducer } from 'react'
+
+const theTodos=[]
+
+const reducer =(state, action)=>{
+  if(action.type === "ADD_TODO"){
+    return [...state, action.payload]
+  }
+  if(action.type === "EDIT_TODO"){
+    return state.map(todo => 
+      todo.id === action.payload.id ? {...todo, text: action.payload.text} : todo
+    )
+  }
+  if(action.type === "SAVE_TODO"){
+    return state.map(todo => 
+      todo.id === action.payload.id ? {...todo, onEdit: false} : todo
+    )
+  }
+  if(action.type === "TO_EDIT"){
+    return state.map(todo => 
+      todo.id === action.payload.id ? {...todo, onEdit: true} : todo
+    )
+  }
+  if(action.type === "TOGGLE_TODO"){
+    return state.map(todo => 
+      todo.id === action.payload.id ? {...todo, completed: !todo.completed} : todo
+    )
+  }
+  if(action.type === "DELETE_TODO"){
+    return state.filter(todo => todo.id !== action.payload.id)
+  }
+  return state;
+}
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [capital, dispatch] = useReducer(reducer, theTodos);
   const [inputText, setInputText] = useState("");
 
   
   const addTodos=()=>{
-    setTodos((e)=> [...e, {id:todos.length + 1, text: inputText , onEdit: false}]);
+    dispatch({type: "ADD_TODO", payload: {id: capital.length + 1, text: inputText, onEdit: false, completed: false}});
     setInputText("") 
   }
 
   const editTodos=(id, text)=>{
-    const editedTodos = todos.map((e)=>{
-      if(id === e.id){
-        e.text = text
-        return e
-      }else{
-        return e
-      }
-    })
-    setTodos(editedTodos)
+    dispatch({type: "EDIT_TODO", payload: {id, text}});
   }
 
   const onSave=(id)=>{
-    const savedTodos = todos.map((e)=>{
-      if(id === e.id){
-        e.onEdit = false
-        return e
-      }else{
-        return e
-      }
-    })
-    setTodos(savedTodos)
+    dispatch({type: "SAVE_TODO", payload: {id}});
+
   }
   
   const toEdit=(id)=>{
-      const edtingMode = todos.map((e)=>{
-        if(id === e.id){
-          e.onEdit = true
-          return e
-        }else{
-          return e
-        }
-      })
-      setTodos(edtingMode)
+    dispatch({type: "TO_EDIT", payload: {id}})
+  }
+  
+
+  const changeStatus=(id)=>{
+    dispatch({type: "TOGGLE_TODO", payload: {id}});
+  }
+
+  const deleteTodo=(id)=>{
+    dispatch({type: "DELETE_TODO", payload: {id}})
   }
   return (
-    <>
+    <div style={{display: "flex", alignItems: "center", gap: 20, padding: 20}}>
       <div className='todo-app'>
         <h3>To-Do List</h3>
         <div className='todo-form'>
@@ -66,13 +85,23 @@ function App() {
         </div>
         <div className='todo-list-holder'>
           {
-            todos.map((e)=>(
-              <TodoItems key={e.id} info={e} toEdit={toEdit} editTodos={editTodos} onSave={onSave}/>
+            capital.map((e)=>(
+              e.completed === false ?
+              <TodoItems key={e.id} info={e} toEdit={toEdit} editTodos={editTodos} onSave={onSave} changeStatus={changeStatus} deleteTodo={deleteTodo}/>: null
             ))
           }
         </div>
        </div> 
-    </>
+       <Completed>
+        {
+            capital.map((e)=>(
+              e.completed === true ?
+              <TodoItems key={e.id} info={e} toEdit={toEdit} editTodos={editTodos} onSave={onSave} changeStatus={changeStatus} deleteTodo={deleteTodo}/>: null
+            ))
+          }
+       </Completed>
+       
+    </div>
   )
 }
 

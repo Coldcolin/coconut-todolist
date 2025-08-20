@@ -1,10 +1,12 @@
 import "./todo-items.css";
 import Button from '../button/button';
 
-const TodoItems = ({info, toEdit, editTodos, onSave}) => {
+const TodoItems = ({info, toEdit, editTodos, onSave, changeStatus, deleteTodo}) => {
+  
   return (
     <div className='todo-items'>
-      {info.onEdit? <input value={info.text} onChange={(e)=> editTodos(info.id, e.target.value) }/>:<p>{info.text}</p> }
+      <input type="checkbox" value={info.completed} className='todo-items-checkbox' onChange={()=> changeStatus(info.id)} />
+      {info.onEdit? <input value={info.text} onChange={(e)=> editTodos(info.id, e.target.value) }/>:<p style={{color: "black"}}>{info.text}</p> }
         <div className="todo-items-buttons">
         <Button style={{backgroundColor: "tomato",
               color: "white",
@@ -12,7 +14,7 @@ const TodoItems = ({info, toEdit, editTodos, onSave}) => {
               paddingBlock: 10,
               paddingInline: 10,
               borderRadius: 4,
-              cursor: "pointer"}}>Delete</Button>
+              cursor: "pointer"}} action={deleteTodo} id={info.id}>Delete</Button>
         <Button style={{backgroundColor: "#000",
               color: "white",
               border: "none",
