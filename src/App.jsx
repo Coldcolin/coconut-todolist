@@ -22,6 +22,8 @@ const reducer =(state, action)=>{
       todo.id === action.payload.id ? {...todo, onEdit: false} : todo
     )
   }
+  // This is for the edit button, when we click it, it will change the onEdit property to true, which will render the input field and save button
+  
   if(action.type === "TO_EDIT"){
     return state.map(todo => 
       todo.id === action.payload.id ? {...todo, onEdit: true} : todo
